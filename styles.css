@@ -764,6 +764,39 @@ h3 {
   font-size: 1.05rem;
 }
 
+.result-callout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1.35rem;
+  margin-top: 0.75rem;
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--soft);
+}
+
+.result-callout .result-score {
+  margin: 0;
+  color: var(--green);
+  font: 600 clamp(2.6rem, 5vw, 4rem)/1 var(--font-serif);
+}
+
+.result-score span {
+  font-size: 0.48em;
+}
+
+.result-callout h3 {
+  margin: 0 0 0.35rem;
+  color: var(--green-dark);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+.result-callout p:last-child {
+  margin: 0;
+}
+
 .outcomes {
   align-self: stretch;
   padding: 1.8rem;
@@ -1088,6 +1121,10 @@ h3 {
 @media (max-width: 640px) {
   body {
     font-size: 16px;
+  }
+
+  .result-callout {
+    grid-template-columns: 1fr;
   }
 
   .brand-name {
