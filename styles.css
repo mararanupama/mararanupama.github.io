@@ -670,6 +670,101 @@ h3 {
   line-height: 1.45;
 }
 
+.trust-infographic {
+  margin: 2.5rem 0;
+  padding: clamp(1.7rem, 5vw, 3.25rem);
+  border-radius: 18px;
+  background: var(--soft);
+}
+
+.trust-infographic .trust-eyebrow {
+  margin: 0 0 0.85rem;
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trust-infographic h2 {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.trust-infographic h2 span {
+  color: var(--green);
+}
+
+.trust-measure {
+  margin: clamp(1.4rem, 4vw, 2.2rem) 0;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.trust-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 58px;
+  gap: 1rem;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.trust-label strong {
+  font-size: 0.98rem;
+}
+
+.trust-track {
+  height: 30px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dedbd3;
+}
+
+.trust-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: #918d83;
+}
+
+.trust-row.explainable .trust-bar {
+  background: var(--green);
+}
+
+.trust-value {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-weight: 600;
+  line-height: 1;
+  text-align: right;
+}
+
+.trust-difference {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+}
+
+.trust-difference strong {
+  color: var(--green);
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 4vw, 2.35rem);
+  font-weight: 600;
+}
+
+.trust-difference span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1143,6 +1238,24 @@ h3 {
 @media (max-width: 640px) {
   body {
     font-size: 16px;
+  }
+
+  .trust-row {
+    grid-template-columns: minmax(0, 1fr) 50px;
+    gap: 0.65rem 0.8rem;
+  }
+
+  .trust-label {
+    grid-column: 1 / -1;
+  }
+
+  .trust-track {
+    height: 26px;
+  }
+
+  .trust-value {
+    grid-column: 2;
+    grid-row: 2;
   }
 
   .result-callout {
