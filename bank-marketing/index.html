@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Power BI bank marketing campaign analysis by Anupama Venugopalan, covering Power Query, data quality, conversion insights and business recommendations.">
+    <link rel="canonical" href="https://anupamav.com/bank-marketing/">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <title>Bank Marketing Power BI Case Study | Anupama Venugopalan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="Anupama Venugopalan home">
+          <span class="brand-mark" aria-hidden="true">AV</span>
+          <span class="brand-name">Anupama Venugopalan</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <span class="sr-only">Open menu</span>
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+          <a href="/">Home</a>
+          <a href="/experience/">Experience</a>
+          <div class="nav-menu">
+            <a class="nav-menu-trigger" href="/#case-studies" aria-haspopup="true" aria-current="page">Case Studies</a>
+            <div class="nav-submenu" aria-label="Case studies">
+              <a href="/bank-marketing/" aria-current="page">Bank Marketing</a>
+              <a href="/xai/">XAI</a>
+              <a href="/port-of-esbjerg/">Port of Esbjerg</a>
+              <a href="/lush-box/">The Lush Box</a>
+            </div>
+          </div>
+          <a href="/#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section page-hero" aria-labelledby="bank-title">
+        <p class="eyebrow">Case study · Power BI · Business intelligence</p>
+        <h1 id="bank-title">Bank Marketing Campaign Performance</h1>
+        <p class="lede">Turning 41,188 direct-marketing records into a clear view of conversion, customer response and contact efficiency.</p>
+      </section>
+
+      <section class="section case-detail">
+        <article class="case-card">
+          <div class="case-main">
+            <p class="meta"><span>Portfolio project</span><span>UCI Bank Marketing dataset</span><span>2026</span></p>
+            <p>A Portuguese retail bank contacted clients to promote term deposits. I framed the work as a business intelligence problem: help campaign managers understand which segments and contact patterns were associated with stronger conversion, while keeping the limits of observational data visible.</p>
+
+            <h2>The business questions</h2>
+            <ul class="case-bullets">
+              <li>How many contacted clients subscribed, and what was the overall conversion rate?</li>
+              <li>Which customer, channel and campaign-history segments responded most strongly?</li>
+              <li>How did conversion change as repeated contact attempts increased?</li>
+              <li>Which findings could support practical campaign tests without being presented as causal proof?</li>
+            </ul>
+
+            <h2>Data preparation in Power Query</h2>
+            <p>I separated the work into a source-preserving staging query and a cleaned campaign-contact query. The process removed 12 exact duplicate rows, assigned explicit data types, renamed fields in business language and retained <code>Unknown</code> as a visible source category rather than silently treating it as missing.</p>
+            <p>The source used <code>pdays = 999</code> to mean that a client had not been contacted previously. I separated that code into a previous-contact flag and a nullable days-since-contact field. I also created numeric subscription flags and ordered age bands for reliable measures and visuals.</p>
+
+            <h3 class="visual-heading">Campaign performance dashboard</h3>
+            <section class="bank-dashboard" aria-label="Static dashboard summarising bank marketing campaign performance">
+              <div class="bank-dashboard-head">
+                <div>
+                  <p class="dashboard-kicker">Campaign overview</p>
+                  <h3>Term deposit conversion</h3>
+                </div>
+                <p>41,176 cleaned contact records</p>
+              </div>
+
+              <div class="bank-kpis">
+                <article><span>Total contacts</span><strong>41,176</strong></article>
+                <article><span>Subscriptions</span><strong>4,639</strong></article>
+                <article><span>Conversion rate</span><strong>11.27%</strong></article>
+                <article><span>Average attempts</span><strong>2.57</strong></article>
+              </div>
+
+              <div class="bank-chart-grid">
+                <section class="bank-chart" aria-labelledby="channel-chart-title">
+                  <div class="bank-chart-title"><h4 id="channel-chart-title">Conversion by channel</h4><span>Share subscribed</span></div>
+                  <div class="bar-row"><span>Cellular</span><div class="bar-track"><div class="bar-fill strong" style="width:73.7%"></div></div><strong>14.74%</strong></div>
+                  <div class="bar-row"><span>Telephone</span><div class="bar-track"><div class="bar-fill" style="width:26.2%"></div></div><strong>5.23%</strong></div>
+                </section>
+
+                <section class="bank-chart" aria-labelledby="history-chart-title">
+                  <div class="bank-chart-title"><h4 id="history-chart-title">Previous campaign outcome</h4><span>Share subscribed</span></div>
+                  <div class="bar-row"><span>Success</span><div class="bar-track"><div class="bar-fill strong" style="width:100%"></div></div><strong>65.11%</strong></div>
+                  <div class="bar-row"><span>Failure</span><div class="bar-track"><div class="bar-fill" style="width:21.9%"></div></div><strong>14.23%</strong></div>
+                  <div class="bar-row"><span>No previous</span><div class="bar-track"><div class="bar-fill" style="width:13.6%"></div></div><strong>8.83%</strong></div>
+                </section>
+
+                <section class="bank-chart bank-chart-wide" aria-labelledby="attempt-chart-title">
+                  <div class="bank-chart-title"><h4 id="attempt-chart-title">Conversion falls as contact attempts increase</h4><span>Current campaign attempts</span></div>
+                  <div class="attempt-bars" role="img" aria-label="Conversion rate by campaign contact band: one contact 13.04 percent, two 11.46 percent, three 10.75 percent, four to five 8.68 percent, six or more 5.49 percent">
+                    <div><span style="height:100%"></span><strong>13.04%</strong><small>1</small></div>
+                    <div><span style="height:88%"></span><strong>11.46%</strong><small>2</small></div>
+                    <div><span style="height:82%"></span><strong>10.75%</strong><small>3</small></div>
+                    <div><span style="height:67%"></span><strong>8.68%</strong><small>4-5</small></div>
+                    <div><span style="height:42%"></span><strong>5.49%</strong><small>6+</small></div>
+                  </div>
+                </section>
+              </div>
+              <p class="dashboard-note">Source: UCI Bank Marketing dataset. Conversion is subscriptions divided by contact records after removing exact duplicates.</p>
+            </section>
+
+            <h2>What the data showed</h2>
+            <p>Overall conversion was 11.27%. Cellular contacts converted at 14.74%, compared with 5.23% for telephone contacts. A successful previous campaign outcome was the strongest observed segment, with a 65.11% conversion rate.</p>
+            <p>Contact efficiency weakened as attempts accumulated. Conversion declined from 13.04% on the first attempt to 5.49% for six or more attempts. Students and retired clients also showed high response rates, but their smaller volumes mean conversion and segment size should be considered together.</p>
+
+            <h2>Recommendations</h2>
+            <ul class="case-bullets">
+              <li>Prioritise structured follow-up for clients with a successful previous campaign outcome.</li>
+              <li>Test greater use of cellular contact where consent, regulation and operating practice allow it.</li>
+              <li>Review campaign effort after three attempts and introduce a stronger stop rule after five.</li>
+              <li>Investigate why May carried the highest contact volume but converted below the overall average.</li>
+              <li>Run controlled tests before treating any segment difference as a causal effect.</li>
+            </ul>
+
+            <h2>Important limitations</h2>
+            <p>The dataset contains month and weekday labels but no complete contact date, so I did not manufacture a continuous time series. Call duration is only known after a call ends; it can explain completed-call outcomes but should not drive pre-contact targeting. The findings describe associations in historical campaign data and do not establish why clients subscribed.</p>
+          </div>
+
+          <aside class="outcomes" aria-label="Bank marketing project overview">
+            <h2>Project overview</h2>
+            <dl>
+              <div><dt>41,176</dt><dd>cleaned contact records</dd></div>
+              <div><dt>11.27%</dt><dd>overall conversion rate</dd></div>
+              <div><dt>12</dt><dd>exact duplicates removed</dd></div>
+            </dl>
+            <div class="aside-skills">
+              <h3>Skills demonstrated</h3>
+              <ul class="tags" aria-label="Skills demonstrated">
+                <li>Power BI</li>
+                <li>Power Query</li>
+                <li>Data cleaning</li>
+                <li>Data modelling</li>
+                <li>DAX measures</li>
+                <li>Dashboard design</li>
+                <li>Business analysis</li>
+                <li>Insight communication</li>
+              </ul>
+            </div>
+          </aside>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Anupama Venugopalan</p>
+      <p>Business analysis · Commercial insight · Responsible AI</p>
+    </footer>
+
+    <script src="/script.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"94f9cf57677042eca44cfb797f68225d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
