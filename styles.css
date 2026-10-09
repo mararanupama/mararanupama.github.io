@@ -776,6 +776,33 @@ h3 {
   margin: 0;
 }
 
+.report-download {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+}
+
+.report-download h3 {
+  margin: 0 0 0.35rem;
+  color: var(--green-dark);
+  font-size: 1rem;
+}
+
+.report-download p {
+  margin: 0 !important;
+  font-size: 0.94rem;
+}
+
+.report-download .button {
+  flex: 0 0 auto;
+}
+
 .photo-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1500,6 +1527,11 @@ h3 {
 
   .button {
     width: 100%;
+  }
+
+  .report-download {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .case-card {
