@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
     <style>
-      .olist-report-frame { width: 100%; aspect-ratio: 1440 / 940; min-height: 360px; margin: 1.5rem 0 1rem; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #f5f5f5; }
+      .olist-report-frame { width: 90%; max-width: 1100px; aspect-ratio: 1440 / 940; min-height: 360px; margin: 1.5rem auto 1rem; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #f5f5f5; }
       .olist-report-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
       .kpi-definitions { margin-top: 2rem; }
       .kpi-definitions > summary { cursor: pointer; padding: 1rem 0; font-weight: 600; color: var(--green-dark); }
@@ -27,7 +27,7 @@
       .kpi-group dd { margin: 0.3rem 0 1rem; color: var(--muted); font-size: 0.94rem; line-height: 1.5; }
       .kpi-group dd:last-child { margin-bottom: 0; }
       @media (max-width: 900px) { .kpi-groups { grid-template-columns: 1fr; } }
-      @media (max-width: 600px) { .olist-report-frame { min-height: 280px; } }
+      @media (max-width: 600px) { .olist-report-frame { width: 100%; min-height: 280px; } }
     </style>
   </head>
   <body>
