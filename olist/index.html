@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Olist e-commerce analysis using SQL and Power BI, covering sales, seller performance, geography and delivery experience.">
+    <link rel="canonical" href="https://anupamav.com/olist/">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <title>E-commerce Sales and Delivery Performance | Anupama Venugopalan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .olist-report-frame { width: 100%; aspect-ratio: 1440 / 940; min-height: 360px; margin: 1.5rem 0 1rem; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #f5f5f5; }
+      .olist-report-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+      .kpi-definitions { margin-top: 2rem; }
+      .kpi-definitions > summary { cursor: pointer; padding: 1rem 0; font-weight: 600; color: var(--green-dark); }
+      .kpi-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+      .kpi-group { padding: 1.35rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+      .kpi-group h3 { margin: 0 0 1rem; font-family: var(--font-sans); font-size: 1.05rem; }
+      .kpi-group dl { margin: 0; }
+      .kpi-group dt { font-weight: 600; font-size: 0.95rem; }
+      .kpi-group dd { margin: 0.3rem 0 1rem; color: var(--muted); font-size: 0.94rem; line-height: 1.5; }
+      .kpi-group dd:last-child { margin-bottom: 0; }
+      @media (max-width: 900px) { .kpi-groups { grid-template-columns: 1fr; } }
+      @media (max-width: 600px) { .olist-report-frame { min-height: 280px; } }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="Anupama Venugopalan home">
+          <span class="brand-mark" aria-hidden="true">AV</span>
+          <span class="brand-name">Anupama Venugopalan</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <span class="sr-only">Open menu</span>
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+          <a href="/">Home</a>
+          <a href="/experience/">Experience</a>
+          <div class="nav-menu">
+            <a class="nav-menu-trigger" href="/#case-studies" aria-haspopup="true">Case Studies</a>
+            <div class="nav-submenu" aria-label="Case studies">
+              <a href="/olist/" aria-current="page">Olist E-commerce</a>
+              <a href="/bank-marketing/">Bank Marketing</a>
+              <a href="/xai/">XAI</a>
+              <a href="/port-of-esbjerg/">Port of Esbjerg</a>
+              <a href="/lush-box/">The Lush Box</a>
+            </div>
+          </div>
+          <a href="/#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section page-hero" aria-labelledby="olist-title">
+        <p class="eyebrow">Case study · SQL · Power BI</p>
+        <h1 id="olist-title">E-commerce Sales and Delivery Performance</h1>
+        <p class="lede">Using SQL and Power BI to compare sales, seller performance and delivery reliability across Brazil.</p>
+      </section>
+      <section class="section">
+        <h2>Explore the interactive report</h2>
+        <p>Use the four report pages and their filters to explore market geography, sales and assortment, the seller network, and delivery experience. Monetary values are in Brazilian reais (R$).</p>
+        <div class="olist-report-frame">
+          <iframe title="Olist e-commerce analysis: interactive Power BI report" width="1440" height="900" src="https://app.fabric.microsoft.com/view?r=eyJrIjoiMzM3YjM5YTktMjBhOS00MjhhLWEwMWMtZWY5ZmJjOGQxNmE5IiwidCI6IjFiMzhjZmU5LTc4ZTAtNGNhYi1hMDkzLWE2ZjY0MmJjMTgzOSJ9" allowfullscreen></iframe>
+        </div>
+        <p><a href="https://app.fabric.microsoft.com/view?r=eyJrIjoiMzM3YjM5YTktMjBhOS00MjhhLWEwMWMtZWY5ZmJjOGQxNmE5IiwidCI6IjFiMzhjZmU5LTc4ZTAtNGNhYi1hMDkzLWE2ZjY0MmJjMTgzOSJ9" target="_blank" rel="noopener">Open the report in a separate tab</a> for a larger view, especially on a phone.</p>
+        <details class="kpi-definitions" open>
+          <summary>KPI definitions: what the numbers mean</summary>
+          <p>KPIs are key performance indicators. These definitions follow the report's measures and apply within the selected filters. All monetary amounts are in Brazilian reais (R$).</p>
+          <div class="kpi-groups">
+            <section class="kpi-group" aria-labelledby="sales-kpis">
+              <h3 id="sales-kpis">Sales</h3>
+              <dl>
+                <dt>Delivered revenue</dt><dd>Total product value from delivered orders, excluding freight charges.</dd>
+                <dt>Delivered orders / product orders</dt><dd>Distinct delivered orders. On product and seller views, only orders containing the selected items count. An order can appear in more than one category.</dd>
+                <dt>Average order value</dt><dd>Delivered revenue divided by the number of delivered orders.</dd>
+                <dt>Freight charged / freight %</dt><dd>Freight charged to customers for delivered items. Freight % is this amount divided by delivered product revenue, multiplied by 100. It measures charges, not delivery costs.</dd>
+                <dt>Average freight per order</dt><dd>Freight charged for selected delivered items divided by distinct delivered orders containing those items.</dd>
+              </dl>
+            </section>
+            <section class="kpi-group" aria-labelledby="network-kpis">
+              <h3 id="network-kpis">Customers and sellers</h3>
+              <dl>
+                <dt>Delivered customers</dt><dd>Unique customers with at least one delivered order.</dd>
+                <dt>States served</dt><dd>Customer states with at least one delivered order.</dd>
+                <dt>Active sellers</dt><dd>Unique sellers with at least one delivered sale.</dd>
+                <dt>Revenue per seller</dt><dd>Delivered product revenue divided by active sellers.</dd>
+              </dl>
+            </section>
+            <section class="kpi-group" aria-labelledby="delivery-kpis">
+              <h3 id="delivery-kpis">Delivery and reviews</h3>
+              <dl>
+                <dt>Average delivery days</dt><dd>Mean recorded delivery duration for delivered orders. Missing durations are excluded.</dd>
+                <dt>Observed late-delivery rate</dt><dd>Late orders divided by delivered orders with both actual and promised delivery dates, multiplied by 100. Lateness is compared by calendar date.</dd>
+                <dt>On-time rate</dt><dd>The percentage of those observed deliveries that arrived on or before the promised date. Equal to 100% minus the observed late-delivery rate.</dd>
+                <dt>Average review score</dt><dd>Mean of each order's average review score. Orders without a review are excluded.</dd>
+                <dt>Low review share</dt><dd>Reviewed orders with an average score of 2 or below, divided by all reviewed orders, multiplied by 100.</dd>
+              </dl>
+            </section>
+          </div>
+        </details>
+      </section>
+      <section class="section case-detail">
+        <article class="case-card">
+          <div class="case-main">
+            <p class="meta"><span>Portfolio project</span><span>Olist public dataset</span></p>
+            <h2>The business question</h2>
+            <p>A marketplace can grow its sales while customers in some regions still face slow deliveries or high freight charges. I used SQL and Power BI to bring commercial performance and customer experience into a single report, allowing readers to compare where demand comes from, which sellers contribute to it and how delivery performance varies.</p>
+            <h2>Building a reliable analytical model</h2>
+            <p>The model imports MySQL analytical views for orders, order items and customer summaries, alongside customer, product and seller dimensions. Order-level and item-level facts are kept separate so that a multi-item order does not automatically become several orders in the analysis.</p>
+            <p>Separate customer and seller geography dimensions distinguish where demand originates from where sellers are based. DAX measures calculate delivered revenue, average order value, active sellers and delivery performance within the selected context.</p>
+            <h2>SQL and geographic data quality</h2>
+            <p>The accompanying geography SQL script uses common table expressions and window functions to deduplicate postcode coordinates, calculate median locations and select a single state for each postcode. It also includes checks comparing customer counts before and after the geography join, helping detect joins that could multiply records.</p>
+            <p>The project notes identify the geography in the report as a fixed snapshot prepared from local CSV files. The SQL script provides its database-side equivalent; execution of that script is not established by the supplied files.</p>
+            <h2>Four views of marketplace performance</h2>
+            <ul class="case-bullets">
+              <li><strong>Market Geography:</strong> compare customer revenue, regional demand and service performance across Brazil.</li>
+              <li><strong>Sales &amp; Assortment:</strong> explore monthly delivered merchandise revenue, leading categories and freight charged.</li>
+              <li><strong>Seller Network:</strong> examine seller concentration, leading sellers and regional commercial contribution.</li>
+              <li><strong>Delivery Experience:</strong> compare late deliveries, delivery times and review outcomes.</li>
+            </ul>
+            <h2>Making the measures meaningful</h2>
+            <p>Delivered revenue includes merchandise prices for delivered orders and excludes freight. Freight charged is analysed separately; it does not represent logistics cost or profit margin. The observed late-delivery rate uses delivered orders with both actual and estimated delivery dates, so missing dates are not treated as evidence of on-time delivery.</p>
+            <p>Category order counts are distinct within the selected category. Because a basket can contain several categories, adding those counts together would overstate the number of orders. Seller and category revenue rankings recalculate within the current selections.</p>
+            <h2>Decisions the report supports</h2>
+            <p>The report gives a marketplace team a way to investigate whether commercially important regions also experience delivery problems, how dependent sales are on particular sellers, and where freight charges deserve closer review. These comparisons can guide follow-up analysis and operational prioritisation.</p>
+            <h2>Limits of the analysis</h2>
+            <p>This is a historical public dataset. Differences between regions, sellers or review groups describe associations and do not establish causes. Revenue is not profit, and customer freight charges are not the marketplace's delivery costs.</p>
+          </div>
+          <aside class="outcomes" aria-label="Olist project overview">
+            <h2>Project overview</h2>
+            <dl>
+              <div><dt>SQL + Power BI</dt><dd>analytical views, modelling and interactive reporting</dd></div>
+              <div><dt>4 report pages</dt><dd>commercial performance and customer experience</dd></div>
+            </dl>
+            <div class="aside-skills">
+              <h3>Skills demonstrated</h3>
+              <ul class="tags" aria-label="Skills demonstrated"><li>MySQL</li><li>Data extraction</li><li>Data cleaning</li><li>SQL joins</li><li>CTEs</li><li>CASE expressions</li><li>Join validation</li><li>Data modelling</li><li>DAX measures</li><li>Power BI</li><li>Geographic analysis</li><li>Business analysis</li></ul>
+            </div>
+          </aside>
+        </article>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p>© <span id="year">2026</span> Anupama Venugopalan</p>
+      <p>Business analysis · Commercial insight · Responsible AI</p>
+    </footer>
+
+    <script src="/script.js"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"94f9cf57677042eca44cfb797f68225d"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+
+  </body>
+</html>
