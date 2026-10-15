@@ -20,7 +20,8 @@
       .kpi-definitions > summary { cursor: pointer; padding: 1rem 0; font-weight: 600; color: var(--green-dark); }
       .kpi-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
       .kpi-group { padding: 1.35rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-      .kpi-group h3 { margin: 0 0 1rem; font-family: var(--font-sans); font-size: 1.05rem; }
+      .kpi-group h3 { margin: 0 0 0.5rem; font-family: var(--font-sans); font-size: clamp(1.4rem, 2vw, 1.75rem); line-height: 1.25; }
+      .kpi-question { margin: 0 0 1.4rem; color: var(--green-dark); font-size: 1.05rem; font-weight: 500; line-height: 1.45; }
       .kpi-group dl { margin: 0; }
       .kpi-group dt { font-weight: 600; font-size: 0.95rem; }
       .kpi-group dd { margin: 0.3rem 0 1rem; color: var(--muted); font-size: 0.94rem; line-height: 1.5; }
@@ -77,38 +78,44 @@
         <p><a href="https://app.fabric.microsoft.com/view?r=eyJrIjoiMzM3YjM5YTktMjBhOS00MjhhLWEwMWMtZWY5ZmJjOGQxNmE5IiwidCI6IjFiMzhjZmU5LTc4ZTAtNGNhYi1hMDkzLWE2ZjY0MmJjMTgzOSJ9" target="_blank" rel="noopener">Open the report in a separate tab</a> for a larger view, especially on a phone.</p>
         <details class="kpi-definitions" open>
           <summary>KPI definitions: what the numbers mean</summary>
-          <p>KPIs are key performance indicators. These definitions follow the report's measures and apply within the selected filters. All monetary amounts are in Brazilian reais (R$).</p>
+          <p>KPIs are the main numbers used to track business performance. Here, sales, orders and customer counts cover successfully delivered orders. All amounts are in Brazilian reais (R$), and the numbers change with your report filters.</p>
           <div class="kpi-groups">
             <section class="kpi-group" aria-labelledby="sales-kpis">
               <h3 id="sales-kpis">Sales</h3>
+              <p class="kpi-question">How much did we sell?</p>
               <dl>
-                <dt>Delivered revenue</dt><dd>Total product value from delivered orders, excluding freight charges.</dd>
-                <dt>Delivered orders / product orders</dt><dd>Distinct delivered orders. On product and seller views, only orders containing the selected items count. An order can appear in more than one category.</dd>
-                <dt>Average order value</dt><dd>Delivered revenue divided by the number of delivered orders.</dd>
-                <dt>Freight charged / freight %</dt><dd>Freight charged to customers for delivered items. Freight % is this amount divided by delivered product revenue, multiplied by 100. It measures charges, not delivery costs.</dd>
-                <dt>Average freight per order</dt><dd>Freight charged for selected delivered items divided by distinct delivered orders containing those items.</dd>
+                <dt>Revenue</dt><dd>The value of products that reached customers. Shipping charges are excluded.</dd>
+                <dt>No. of orders</dt><dd>How many orders were delivered. One order containing five products still counts as one order.</dd>
+                <dt>Average order value</dt><dd>How much customers spent on products per order, on average. For example, R$300 across two orders means R$150 per order.</dd>
+                <dt>Freight charges</dt><dd>The shipping fees charged to customers.</dd>
+                <dt>Freight %</dt><dd>Shipping charges compared with product value. For example, R$30 in shipping on R$300 of products is 10%.</dd>
+                <dt>Average freight per order</dt><dd>The average shipping fee per order. For example, R$30 across two orders means R$15 per order.</dd>
               </dl>
             </section>
             <section class="kpi-group" aria-labelledby="network-kpis">
-              <h3 id="network-kpis">Customers and sellers</h3>
+              <h3 id="network-kpis">Customers &amp; Sellers</h3>
+              <p class="kpi-question">Who contributed to those sales?</p>
               <dl>
-                <dt>Delivered customers</dt><dd>Unique customers with at least one delivered order.</dd>
-                <dt>States served</dt><dd>Customer states with at least one delivered order.</dd>
-                <dt>Active sellers</dt><dd>Unique sellers with at least one delivered sale.</dd>
-                <dt>Revenue per seller</dt><dd>Delivered product revenue divided by active sellers.</dd>
+                <dt>No. of customers</dt><dd>How many different customers received an order. A customer with three orders counts once.</dd>
+                <dt>States served</dt><dd>How many Brazilian states had customers who received orders.</dd>
+                <dt>Active sellers</dt><dd>How many different sellers had at least one delivered sale.</dd>
+                <dt>Revenue per seller</dt><dd>The average product revenue per active seller. For example, R$1,000 across ten sellers means R$100 per seller, even if some sold much more than others.</dd>
               </dl>
             </section>
             <section class="kpi-group" aria-labelledby="delivery-kpis">
-              <h3 id="delivery-kpis">Delivery and reviews</h3>
+              <h3 id="delivery-kpis">Delivery &amp; Reviews</h3>
+              <p class="kpi-question">How well did we deliver?</p>
               <dl>
-                <dt>Average delivery days</dt><dd>Mean recorded delivery duration for delivered orders. Missing durations are excluded.</dd>
-                <dt>Observed late-delivery rate</dt><dd>Late orders divided by delivered orders with both actual and promised delivery dates, multiplied by 100. Lateness is compared by calendar date.</dd>
-                <dt>On-time rate</dt><dd>The percentage of those observed deliveries that arrived on or before the promised date. Equal to 100% minus the observed late-delivery rate.</dd>
-                <dt>Average review score</dt><dd>Mean of each order's average review score. Orders without a review are excluded.</dd>
-                <dt>Low review share</dt><dd>Reviewed orders with an average score of 2 or below, divided by all reviewed orders, multiplied by 100.</dd>
+                <dt>Average delivery days</dt><dd>The average time taken to deliver orders. For example, deliveries taking eight and twelve days average ten days. Orders without a recorded duration are excluded.</dd>
+                <dt>Late-delivery rate</dt><dd>The percentage of orders arriving after the promised date. For example, eight late deliveries out of 100 means 8% were late. Only delivered orders with both dates recorded are included.</dd>
+                <dt>On-time rate</dt><dd>The percentage arriving on or before the promised date, using the same orders as the late-delivery rate. If 8% were late, 92% were on time.</dd>
+                <dt>Average review score</dt><dd>The average customer rating. Each reviewed order contributes one score; orders without reviews are excluded.</dd>
+                <dt>Low review share</dt><dd>The percentage of reviewed orders rated 2 or below. For example, 20 poorly rated orders out of 100 reviewed orders means 20%.</dd>
               </dl>
             </section>
           </div>
+          <p>Examples above explain the calculations; they are not results from this dataset. Revenue does not tell us profit, and freight charges do not tell us what delivery cost the business.</p>
+          <p>When filtering by category or seller, order counts and freight figures cover only the selected items. One order may appear in several categories, so category order counts should not be added together.</p>
         </details>
       </section>
       <section class="section case-detail">
