@@ -90,7 +90,7 @@
               <li><strong>The Northeast had the highest regional late-delivery rate: 12.7%.</strong> This compares with 6.8% overall and 6.1% in the Southeast. It is a clear priority for investigating delivery performance.</li>
               <li><strong>Late orders received much lower review scores.</strong> Reviewed late orders averaged 2.27 out of 5, compared with 4.29 for on-time orders. The gap shows an association between delivery reliability and customer ratings, not proof of causation.</li>
             </ul>
-            <p><a href="https://github.com/mararanupama/mararanupama.github.io/blob/main/projects/olist-ecommerce-sql-powerbi/results/report-findings.json" target="_blank" rel="noopener">See the source values and calculations</a> used for these findings. The figures here are a fixed snapshot; the embedded report responds to your filters.</p>
+            <p><a href="https://github.com/mararanupama/olist-ecommerce-sql-powerbi/blob/main/results/report-findings.json" target="_blank" rel="noopener">See the source values and calculations</a> used for these findings. The figures here are a fixed snapshot; the embedded report responds to your filters.</p>
             <h2>Building a reliable analytical model</h2>
             <p>In MySQL, I extracted the raw CSV records into staging tables, cleaned text and numeric fields, and built analytical views. Item, payment and review records are summarised to one row per order before joining them to the order table. This prevents an order with several items or payments from multiplying the order-level totals.</p>
             <p>Separate customer and seller geography dimensions distinguish where demand originates from where sellers are based. DAX measures calculate delivered revenue, average order value, active sellers and delivery performance within the selected context.</p>
@@ -136,7 +136,7 @@ FROM dim_customer c
 LEFT JOIN vw_postcode_geography g
   ON LPAD(c.customer_zip_code_prefix, 5, &#39;0&#39;) = g.postcode;</code></pre>
             </details>
-            <p><a class="button secondary" href="https://github.com/mararanupama/mararanupama.github.io/tree/main/projects/olist-ecommerce-sql-powerbi" target="_blank" rel="noopener">View the SQL project on GitHub</a></p>
+            <p><a class="button secondary" href="https://github.com/mararanupama/olist-ecommerce-sql-powerbi" target="_blank" rel="noopener">View the SQL project on GitHub</a></p>
             <h2>Four views of marketplace performance</h2>
             <ul class="case-bullets">
               <li><strong>Market Geography:</strong> compare customer revenue, regional demand and service performance across Brazil.</li>
