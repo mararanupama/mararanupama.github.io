@@ -17,6 +17,12 @@
       .olist-report-frame { width: 90%; max-width: 1100px; aspect-ratio: 1440 / 940; min-height: 360px; margin: 1.5rem auto 1rem; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #f5f5f5; }
       .olist-report-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
       .kpi-definitions { margin-top: 2rem; }
+      .sql-example { max-width: 100%; overflow-x: auto; margin: 1rem 0 1.5rem; padding: 1.15rem; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+      .case-main .sql-example code { display: block; padding: 0; background: none; color: var(--green-dark); font-size: 0.82rem; line-height: 1.65; }
+      .sql-detail { margin-bottom: 1rem; }
+      .sql-detail summary { cursor: pointer; color: var(--green-dark); font-weight: 600; margin-bottom: 0.75rem; }
+      .case-main .findings-context { font-size: 0.9rem; }
+      .olist-findings { gap: 1.15rem; }
       .kpi-definitions > summary { cursor: pointer; padding: 1rem 0; font-weight: 600; color: var(--green-dark); }
       .kpi-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
       .kpi-group { padding: 1.35rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
@@ -68,15 +74,108 @@
         <p class="eyebrow">Case study · SQL · Power BI</p>
         <h1 id="olist-title">E-commerce Sales and Delivery Performance</h1>
         <p class="lede">Using SQL and Power BI to compare sales, seller performance and delivery reliability across Brazil.</p>
+        <a class="button secondary" href="#interactive-report">Explore the interactive report</a>
       </section>
-      <section class="section">
-        <h2>Explore the interactive report</h2>
+      <section class="section case-detail">
+        <article class="case-card">
+          <div class="case-main">
+            <p class="meta"><span>Portfolio project</span><span>Olist public dataset</span></p>
+            <h2>The business question</h2>
+            <p>A marketplace can grow its sales while customers in some regions still face slow deliveries or high freight charges. I used SQL and Power BI to bring commercial performance and customer experience into a single report, allowing readers to compare where demand comes from, which sellers contribute to it and how delivery performance varies.</p>
+            <h2 id="findings">What the data showed</h2>
+            <p class="findings-context">Historical dataset, with all years, regions and states selected. Verified against the public report on 16 October 2026.</p>
+            <ul class="case-bullets olist-findings">
+              <li><strong>The Southeast generated 65.4% of customer revenue.</strong> Customers in this region accounted for R$8.65 million of R$13.22 million in delivered product sales. This makes it the largest customer market in the report.</li>
+              <li><strong>The top ten sellers generated 13.3% of revenue.</strong> Together they contributed R$1.75 million, among 2,970 active sellers. Their share makes these sellers worth monitoring, while most revenue came from the wider network.</li>
+              <li><strong>The Northeast had the highest regional late-delivery rate: 12.7%.</strong> This compares with 6.8% overall and 6.1% in the Southeast. It is a clear priority for investigating delivery performance.</li>
+              <li><strong>Late orders received much lower review scores.</strong> Reviewed late orders averaged 2.27 out of 5, compared with 4.29 for on-time orders. The gap shows an association between delivery reliability and customer ratings, not proof of causation.</li>
+            </ul>
+            <p><a href="https://github.com/mararanupama/mararanupama.github.io/blob/main/projects/olist-ecommerce-sql-powerbi/results/report-findings.json" target="_blank" rel="noopener">See the source values and calculations</a> used for these findings. The figures here are a fixed snapshot; the embedded report responds to your filters.</p>
+            <h2>Building a reliable analytical model</h2>
+            <p>In MySQL, I extracted the raw CSV records into staging tables, cleaned text and numeric fields, and built analytical views. Item, payment and review records are summarised to one row per order before joining them to the order table. This prevents an order with several items or payments from multiplying the order-level totals.</p>
+            <p>Separate customer and seller geography dimensions distinguish where demand originates from where sellers are based. DAX measures calculate delivered revenue, average order value, active sellers and delivery performance within the selected context.</p>
+            <h2>SQL and geographic data quality</h2>
+            <p>The accompanying geography SQL script uses common table expressions and window functions to deduplicate postcode coordinates, calculate median locations and select a single state for each postcode. It also includes checks comparing customer counts before and after the geography join, helping detect joins that could multiply records.</p>
+            <p>The report uses a geography snapshot prepared from the source CSVs; the SQL script reproduces the same logic in MySQL.</p>
+            <h2>SQL you can inspect</h2>
+            <p>This shortened example uses the same CTE, join and delivery-flag logic as the order view. It totals the items first, then joins one result per order. The CASE expression marks delivered orders.</p>
+            <pre class="sql-example"><code>WITH item_summary AS (
+    SELECT order_id,
+           SUM(CAST(price AS DECIMAL(12,2))) AS item_revenue
+    FROM raw_order_items
+    GROUP BY order_id
+)
+SELECT o.order_id,
+       COALESCE(i.item_revenue, 0) AS item_revenue,
+       CASE WHEN o.order_status = &#39;delivered&#39;
+            THEN 1 ELSE 0 END AS delivered_flag
+FROM raw_orders o
+LEFT JOIN item_summary i ON o.order_id = i.order_id;</code></pre>
+            <details class="sql-detail">
+              <summary>See the product cleaning query</summary>
+              <p>This extract fills missing category names, removes unwanted whitespace and converts product weight from text to a decimal number.</p>
+              <pre class="sql-example"><code>SELECT p.product_id,
+       TRIM(BOTH &#39;\r&#39; FROM COALESCE(
+           t.product_category_name_english,
+           p.product_category_name, &#39;unknown&#39;)) AS product_category,
+       CAST(NULLIF(p.product_weight_g, &#39;&#39;) AS DECIMAL(12,2))
+           AS product_weight_g
+FROM raw_products p
+LEFT JOIN raw_category_translation t
+    ON p.product_category_name = t.product_category_name;</code></pre>
+            </details>
+            <details class="sql-detail">
+              <summary>See the postcode join check</summary>
+              <p>The before and after customer counts should match. The final column counts customers without matching coordinates, so missing geography stays visible.</p>
+              <pre class="sql-example"><code>SELECT COUNT(*) AS customer_rows_before_join
+FROM dim_customer;
+
+SELECT COUNT(*) AS customer_rows_after_join,
+       SUM(g.postcode IS NULL) AS customers_without_coordinates
+FROM dim_customer c
+LEFT JOIN vw_postcode_geography g
+  ON LPAD(c.customer_zip_code_prefix, 5, &#39;0&#39;) = g.postcode;</code></pre>
+            </details>
+            <p><a class="button secondary" href="https://github.com/mararanupama/mararanupama.github.io/tree/main/projects/olist-ecommerce-sql-powerbi" target="_blank" rel="noopener">View the SQL project on GitHub</a></p>
+            <h2>Four views of marketplace performance</h2>
+            <ul class="case-bullets">
+              <li><strong>Market Geography:</strong> compare customer revenue, regional demand and service performance across Brazil.</li>
+              <li><strong>Sales &amp; Assortment:</strong> explore monthly delivered merchandise revenue, leading categories and freight charged.</li>
+              <li><strong>Seller Network:</strong> examine seller concentration, leading sellers and regional commercial contribution.</li>
+              <li><strong>Delivery Experience:</strong> compare late deliveries, delivery times and review outcomes.</li>
+            </ul>
+
+            <h2>Decisions the report supports</h2>
+            <p>The report gives a marketplace team a way to investigate whether commercially important regions also experience delivery problems, how dependent sales are on particular sellers, and where freight charges deserve closer review. These comparisons can guide follow-up analysis and operational prioritisation.</p>
+            <h2>Limits of the analysis</h2>
+            <p>This is a historical public dataset. Differences between regions, sellers or review groups describe associations and do not establish causes. Revenue is not profit, and customer freight charges are not the marketplace's delivery costs.</p>
+          </div>
+          <aside class="outcomes" aria-label="Olist project overview">
+            <h2>Project overview</h2>
+            <dl>
+              <div><dt>R$13.22M</dt><dd>revenue from delivered products</dd></div>
+              <div><dt>96,478</dt><dd>delivered orders</dd></div>
+              <div><dt>13.3%</dt><dd>revenue from the top ten sellers</dd></div>
+              <div><dt>93.2%</dt><dd>on-time delivery among orders with both dates recorded</dd></div>
+            </dl>
+            <div class="aside-skills">
+              <h3>Skills demonstrated</h3>
+              <ul class="tags" aria-label="Skills demonstrated"><li>MySQL</li><li>Data extraction</li><li>Data cleaning</li><li>SQL joins</li><li>CTEs</li><li>CASE expressions</li><li>Join validation</li><li>Data modelling</li><li>DAX measures</li><li>Power BI</li><li>Geographic analysis</li><li>Business analysis</li></ul>
+            </div>
+          </aside>
+        </article>
+      </section>
+      <section class="section" id="interactive-report" aria-labelledby="interactive-report-title">
+        <h2 id="interactive-report-title">Explore the interactive report</h2>
         <p>Use the four report pages and their filters to explore market geography, sales and assortment, the seller network, and delivery experience. Monetary values are in Brazilian reais (R$).</p>
         <div class="olist-report-frame">
           <iframe title="Olist e-commerce analysis: interactive Power BI report" width="1440" height="900" src="https://app.fabric.microsoft.com/view?r=eyJrIjoiMzM3YjM5YTktMjBhOS00MjhhLWEwMWMtZWY5ZmJjOGQxNmE5IiwidCI6IjFiMzhjZmU5LTc4ZTAtNGNhYi1hMDkzLWE2ZjY0MmJjMTgzOSJ9" allowfullscreen></iframe>
         </div>
         <p><a href="https://app.fabric.microsoft.com/view?r=eyJrIjoiMzM3YjM5YTktMjBhOS00MjhhLWEwMWMtZWY5ZmJjOGQxNmE5IiwidCI6IjFiMzhjZmU5LTc4ZTAtNGNhYi1hMDkzLWE2ZjY0MmJjMTgzOSJ9" target="_blank" rel="noopener">Open the report in a separate tab</a> for a larger view, especially on a phone.</p>
-        <details class="kpi-definitions" open>
+
+      </section>
+      <section class="section" aria-label="KPI definitions">
+        <details class="kpi-definitions">
           <summary>KPI definitions: what the numbers mean</summary>
           <p>KPIs are the main numbers used to track business performance. Here, sales, orders and customer counts cover successfully delivered orders. All amounts are in Brazilian reais (R$), and the numbers change with your report filters.</p>
           <div class="kpi-groups">
@@ -114,49 +213,9 @@
               </dl>
             </section>
           </div>
-          <p>Examples above explain the calculations; they are not results from this dataset. Revenue does not tell us profit, and freight charges do not tell us what delivery cost the business.</p>
+          <p>Examples explain the calculations; they are not results from this dataset.</p>
           <p>When filtering by category or seller, order counts and freight figures cover only the selected items. One order may appear in several categories, so category order counts should not be added together.</p>
         </details>
-      </section>
-      <section class="section case-detail">
-        <article class="case-card">
-          <div class="case-main">
-            <p class="meta"><span>Portfolio project</span><span>Olist public dataset</span></p>
-            <h2>The business question</h2>
-            <p>A marketplace can grow its sales while customers in some regions still face slow deliveries or high freight charges. I used SQL and Power BI to bring commercial performance and customer experience into a single report, allowing readers to compare where demand comes from, which sellers contribute to it and how delivery performance varies.</p>
-            <h2>Building a reliable analytical model</h2>
-            <p>The model imports MySQL analytical views for orders, order items and customer summaries, alongside customer, product and seller dimensions. Order-level and item-level facts are kept separate so that a multi-item order does not automatically become several orders in the analysis.</p>
-            <p>Separate customer and seller geography dimensions distinguish where demand originates from where sellers are based. DAX measures calculate delivered revenue, average order value, active sellers and delivery performance within the selected context.</p>
-            <h2>SQL and geographic data quality</h2>
-            <p>The accompanying geography SQL script uses common table expressions and window functions to deduplicate postcode coordinates, calculate median locations and select a single state for each postcode. It also includes checks comparing customer counts before and after the geography join, helping detect joins that could multiply records.</p>
-            <p>The project notes identify the geography in the report as a fixed snapshot prepared from local CSV files. The SQL script provides its database-side equivalent; execution of that script is not established by the supplied files.</p>
-            <h2>Four views of marketplace performance</h2>
-            <ul class="case-bullets">
-              <li><strong>Market Geography:</strong> compare customer revenue, regional demand and service performance across Brazil.</li>
-              <li><strong>Sales &amp; Assortment:</strong> explore monthly delivered merchandise revenue, leading categories and freight charged.</li>
-              <li><strong>Seller Network:</strong> examine seller concentration, leading sellers and regional commercial contribution.</li>
-              <li><strong>Delivery Experience:</strong> compare late deliveries, delivery times and review outcomes.</li>
-            </ul>
-            <h2>Making the measures meaningful</h2>
-            <p>Delivered revenue includes merchandise prices for delivered orders and excludes freight. Freight charged is analysed separately; it does not represent logistics cost or profit margin. The observed late-delivery rate uses delivered orders with both actual and estimated delivery dates, so missing dates are not treated as evidence of on-time delivery.</p>
-            <p>Category order counts are distinct within the selected category. Because a basket can contain several categories, adding those counts together would overstate the number of orders. Seller and category revenue rankings recalculate within the current selections.</p>
-            <h2>Decisions the report supports</h2>
-            <p>The report gives a marketplace team a way to investigate whether commercially important regions also experience delivery problems, how dependent sales are on particular sellers, and where freight charges deserve closer review. These comparisons can guide follow-up analysis and operational prioritisation.</p>
-            <h2>Limits of the analysis</h2>
-            <p>This is a historical public dataset. Differences between regions, sellers or review groups describe associations and do not establish causes. Revenue is not profit, and customer freight charges are not the marketplace's delivery costs.</p>
-          </div>
-          <aside class="outcomes" aria-label="Olist project overview">
-            <h2>Project overview</h2>
-            <dl>
-              <div><dt>SQL + Power BI</dt><dd>analytical views, modelling and interactive reporting</dd></div>
-              <div><dt>4 report pages</dt><dd>commercial performance and customer experience</dd></div>
-            </dl>
-            <div class="aside-skills">
-              <h3>Skills demonstrated</h3>
-              <ul class="tags" aria-label="Skills demonstrated"><li>MySQL</li><li>Data extraction</li><li>Data cleaning</li><li>SQL joins</li><li>CTEs</li><li>CASE expressions</li><li>Join validation</li><li>Data modelling</li><li>DAX measures</li><li>Power BI</li><li>Geographic analysis</li><li>Business analysis</li></ul>
-            </div>
-          </aside>
-        </article>
       </section>
     </main>
     <footer class="site-footer">
